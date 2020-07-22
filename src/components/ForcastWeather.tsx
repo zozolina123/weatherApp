@@ -14,7 +14,7 @@ const DailyWeather = (props: Props) => {
     const futureWeekDayNames = getFutureWeekDayNames();
     const dailyWeatherList = props.dailyWeather.map((dailyWeather, index) => {
         return (
-        <View style={{flexDirection:'row', alignItems: 'center', justifyContent: 'space-between'}}>
+        <View key={index} style={{flexDirection:'row', alignItems: 'center', justifyContent: 'space-between'}}>
             <Text style={fontSize.mini}>{futureWeekDayNames[index]}</Text>
             <Image
                     style={{

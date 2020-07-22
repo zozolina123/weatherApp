@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import WeatherContainer from './src/containers/WeatherContainer/WeatherContainer';
 import * as Inter from '@expo-google-fonts/inter';
 import * as Font from 'expo-font';
 import {AppLoading} from 'expo'
-import { View, ImageBackground, StyleSheet } from 'react-native';
+import 'react-native-gesture-handler';
+import AppNavigation from './src/components/navigation/AppNavigation';
+import {Provider} from 'react-redux';
 
 class App extends Component {
   state = {
@@ -33,33 +34,13 @@ class App extends Component {
     if(!this.state.fontLoaded) {
       <AppLoading>Loading Fonts</AppLoading>
     }
+
     return(
-      <ImageBackground 
-        style={styles.image}
-        source={{uri: 'https://torange.biz/photofxnew/1/HD/mirror-macro-blurring-top-bottom-sky-clear-1049.jpg'}}
-        >
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', paddingTop: 40, paddingBottom: 40}}>
-        <WeatherContainer/>
-      </View>
-      </ImageBackground>
+      <Provider store={store}>
+        <AppNavigation/>
+      </Provider>
     )
   }
 }
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    flexDirection: "column"
-  },
-  image: {
-    flex: 1,
-    resizeMode: "cover",
-    justifyContent: "center"
-  },
-  text: {
-    color: "grey",
-    fontSize: 30,
-    fontWeight: "bold"
-  }
-});
 
 export default App
