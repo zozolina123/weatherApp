@@ -1,4 +1,5 @@
 import { IWeather } from "../interfaces/IWeatherContainer";
+import { Unit } from '../interfaces/IUnit'
 
 export const calculateWindDirection = (degrees: Number) => {
     if(degrees>340 || degrees<=20) return 'N';
@@ -22,6 +23,31 @@ export const roundDegrees = (weather: IWeather) => {
 
     weather.hourly.map(hourlyWeather => {
         hourlyWeather.temp = Math.round(hourlyWeather.temp);
+        return hourlyWeather;
+    })
+    return weather;
+}
+
+export const convertUnit = (temperature: number, unit: Unit) => {
+    if(unit == 'F') {
+        const temperatureFarenhait = temperature * 1.8 + 32;
+        return temperatureFarenhait;
+    }
+    const temperatureCelsius = (temperature - 32) / 1.8;
+    return temperatureCelsius
+}
+
+export const converWeatherToUnit = (weather: IWeather, unit: Unit) => {
+    weather.current.feels_like = convertUnit(weather.current.feels_like, unit)
+    weather.current.temp = convertUnit(weather.current.temp, unit)
+    weather.daily.map(dailyWeather => {
+        dailyWeather.temp.max = convertUnit(dailyWeather.temp.max, unit);
+        dailyWeather.temp.min = convertUnit(dailyWeather.temp.min, unit);
+        return dailyWeather;
+    })
+
+    weather.hourly.map(hourlyWeather => {
+        hourlyWeather.temp = convertUnit(hourlyWeather.temp, unit);
         return hourlyWeather;
     })
     return weather;

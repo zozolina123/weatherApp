@@ -1,9 +1,8 @@
 import React, { Fragment } from 'react';
 import { Text, StyleSheet, View, Image } from 'react-native';
-import { IWeather, IDailyWeather } from '../interfaces/IWeatherContainer';
-import WeatherCard from './WeatherCard';
-import { getFutureWeekDayNames } from '../utils/dateTimeUtils';
-import { fontSize } from '../styles/fontSize';
+import { IWeather, IDailyWeather } from '../../interfaces/IWeatherContainer';
+import { getFutureWeekDayNames } from '../../utils/dateTimeUtils';
+import { fontSize } from '../../styles/fontSize';
 
 
 interface Props {
@@ -25,7 +24,7 @@ const DailyWeather = (props: Props) => {
                         uri: 'http://openweathermap.org/img/wn/'+dailyWeather.weather[0].icon+'@2x.png',
                         }}
                 />
-            <Text style={fontSize.mini}>{dailyWeather.temp.max}/{dailyWeather.temp.min}</Text>
+            <Text style={fontSize.mini}>{dailyWeather.temp.max}&deg;{props.unit}/{dailyWeather.temp.min}&deg;{props.unit}</Text>
         </View>
         )
     })

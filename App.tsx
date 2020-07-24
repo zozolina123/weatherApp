@@ -5,6 +5,7 @@ import {AppLoading} from 'expo'
 import 'react-native-gesture-handler';
 import AppNavigation from './src/components/navigation/AppNavigation';
 import {Provider} from 'react-redux';
+import { store } from './src/redux/store';
 
 class App extends Component {
   state = {

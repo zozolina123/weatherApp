@@ -1,17 +1,17 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { Fragment } from 'react';
 import { StyleSheet, Text, View, Image, ActivityIndicator, ScrollView, ImageBackground } from 'react-native';
-import {IWeather} from '../interfaces/IWeatherContainer'
+import {IWeather} from '../../interfaces/IWeatherContainer'
 import CurrentWeather from "./CurrentWeather"
 import HourlyWeather from './HourlyWeather'
 import DailyWeather from './ForcastWeather';
 import ComfortLevel from './ComfortLevel';
 import WindInfo from './WindInfo';
-import { calculateWindDirection } from '../utils/weatherUtils';
+import { calculateWindDirection, roundDegrees } from '../../utils/weatherUtils';
   
 interface Props {
     locationName: String;
-    localWeather: IWeather | null;
+    localWeather: IWeather;
   };
 
 const WeatherView = (props: Props) => {
@@ -28,11 +28,13 @@ const WeatherView = (props: Props) => {
                 />
                 <DailyWeather
                     dailyWeather={props.localWeather.daily}
+                    unit = {props.unit}
                 />
                 <ComfortLevel
                     humidity = {props.localWeather.current.humidity}
                     feelsLike = {props.localWeather.current.feels_like}
                     uvIndex = {props.localWeather.current.uvi}
+                    unit = {props.unit}
                 />
                 <WindInfo
                   windDirection={calculateWindDirection(props.localWeather.current.wind_deg)}
