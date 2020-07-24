@@ -1,7 +1,7 @@
 import React from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
-import { IWeather } from '../interfaces/IWeatherContainer';
-import {getFutureHours} from '../utils/dateTimeUtils';
+import { IWeather } from '../../interfaces/IWeatherContainer';
+import {getFutureHours} from '../../utils/dateTimeUtils';
 import WeatherCard from './WeatherCard';
 
 
@@ -17,6 +17,7 @@ const HourlyWeather = (props: Props) => {
         return (
             <WeatherCard
             key={index}
+            unit = {props.unit}
             hour={hoursArray[index]}
                 {...weather}
             />

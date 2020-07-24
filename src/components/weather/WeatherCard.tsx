@@ -1,7 +1,7 @@
 import React from 'react';
-import { IHourlyWeather } from '../interfaces/IWeatherContainer';
+import { IHourlyWeather } from '../../interfaces/IWeatherContainer';
 import { TouchableHighlight, Text, Image, View, StyleSheet } from 'react-native';
-import { fontSize } from '../styles/fontSize';
+import { fontSize } from '../../styles/fontSize';
 
 const WeatherCard = (props: IHourlyWeather) => {
     return(
@@ -17,7 +17,7 @@ const WeatherCard = (props: IHourlyWeather) => {
                         uri: 'http://openweathermap.org/img/wn/'+props.weather[0].icon+'@2x.png',
                         }}
                 />
-            <Text style={fontSize.mini}>{props.temp}&deg;</Text>
+            <Text style={fontSize.mini}>{props.temp}&deg;{props.unit}</Text>
         </View>
     </TouchableHighlight>
     );

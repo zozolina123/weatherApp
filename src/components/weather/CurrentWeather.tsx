@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
-import { fontSize } from '../styles/fontSize';
+import { fontSize } from '../../styles/fontSize';
 import {  Text, Image, View, StyleSheet } from 'react-native';
-import { IWeather } from '../interfaces/IWeatherContainer';
+import { IWeather } from '../../interfaces/IWeatherContainer';
 
 interface Props {
     locationName: String;
@@ -22,8 +22,8 @@ const CurrentWeather = (props: Props) => {
                     uri: 'http://openweathermap.org/img/wn/'+props.localWeather.current.weather[0].icon+'@2x.png',
                   }}
               />
-              <Text style={fontSize.xlarge}>{props.localWeather.current.temp}&deg;</Text>
-              <Text style={fontSize.mini}>{props.localWeather.daily[0].temp.max}&deg;/{props.localWeather.daily[0].temp.min}&deg;</Text>
+              <Text style={fontSize.xlarge}>{props.localWeather.current.temp}&deg;{props.unit}</Text>
+              <Text style={fontSize.mini}>{props.localWeather.daily[0].temp.max}&deg;{props.unit}/{props.localWeather.daily[0].temp.min}&deg;{props.unit}</Text>
               <Text style={[fontSize.small,{ textTransform: 'capitalize'}]}>{props.localWeather.current.weather[0].description}</Text>
             </View>
     );

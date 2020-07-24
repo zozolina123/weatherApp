@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
-import { fontSize } from '../styles/fontSize';
+import { fontSize } from '../../styles/fontSize';
 
 const WindInfo = (props: any) => {
     return (
@@ -10,7 +10,7 @@ const WindInfo = (props: any) => {
                 <View style={styles.gifAnimation}>
                     <Image
                         style={{width: 125,height:125}}
-                        source={require('../../assets/wind.png')}
+                        source={require('../../../assets/wind.png')}
                     />
                 </View>
                 <View style={styles.windInfo}>

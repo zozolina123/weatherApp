@@ -1,10 +1,10 @@
 import React from 'react';
 import * as Location from 'expo-location';
-import getWeatherForGeo from '../../utils/weatherAPI';
-import reverseGeocoding from '../../utils/reverseGeocoding';
 import {IWeather} from '../../interfaces/IWeatherContainer'
-import WeatherView from '../../components/WeatherView'
-import {roundDegrees} from '../../utils/weatherUtils';
+import WeatherView from '../../components/weather/WeatherView'
+import { connect } from 'react-redux';
+import {fetchWeather} from '../../redux/actions'
+import { roundDegrees } from '../../utils/weatherUtils';
 
 interface State {
   locationName: String;
@@ -13,37 +13,32 @@ interface State {
 
 class WeatherContainer extends React.Component {
 
-  state: State = {
-    locationName: '',
-    localWeather: null
-  }
-
-constructor(props: Readonly<{}>) {
+constructor(props: any) {
   super(props);
   (async () => {
     let { status } = await Location.requestPermissionsAsync();
     if (status !== 'granted') {
       console.log('Permission to access location was denied');
     }
-
-    let location = await (await Location.getCurrentPositionAsync({}));
-    let localWeather = await getWeatherForGeo(location.coords.latitude, location.coords.longitude);
-    let geoLocation = await reverseGeocoding(location.coords.latitude, location.coords.longitude);
-    const locationName = geoLocation.results[0].formatted_address;
-    this.setState({
-      locationName,
-      localWeather: roundDegrees(localWeather)
-    });
+    this.props.fetchWeather();
   })();
 }
 
   render(){
     return (
       <WeatherView
-        {...this.state}
+        {...this.props.state.weather.weatherLocation.current.weather}
+        unit={this.props.state.weather.unit}
       />
     );
 }
 }
 
-export default WeatherContainer
+const mapStateToProps = (state: any) => {
+  if(state.weather.weatherLocation?.current?.weather?.localWeather)
+    state.weather.weatherLocation.current.weather.localWeather =
+      roundDegrees( state.weather.weatherLocation.current.weather.localWeather);
+  return { state };
+};
+
+export default connect(mapStateToProps, { fetchWeather })(WeatherContainer)

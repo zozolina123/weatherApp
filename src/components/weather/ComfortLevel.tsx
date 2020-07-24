@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { fontSize } from '../styles/fontSize';
+import { fontSize } from '../../styles/fontSize';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 
 const ComfortLevel = (props: any) => {
@@ -15,7 +15,6 @@ const ComfortLevel = (props: any) => {
                     width={15}
                     fill={props.humidity}
                     tintColor="#0000bb"
-                    onAnimationComplete={() => console.log('onAnimationComplete')}
                     backgroundColor="#ddd" 
                     >{
                         (fill) => (
@@ -27,7 +26,7 @@ const ComfortLevel = (props: any) => {
                     </AnimatedCircularProgress>
                 </View>
                 <View style={styles.realFeelInfo}>
-                    <Text style={fontSize.mini}>Feels like: {props.feelsLike}&deg;</Text>
+                    <Text style={fontSize.mini}>Feels like: {props.feelsLike}&deg;{props.unit}</Text>
                     <Text style={fontSize.mini}>UV Index: {props.uvIndex}</Text>
                 </View>
             </View>
