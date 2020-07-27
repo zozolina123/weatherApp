@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import * as Location from 'expo-location';
 import {IWeather} from '../../interfaces/IWeatherContainer'
 import WeatherView from '../../components/weather/WeatherView'
 import { connect } from 'react-redux';
 import {fetchWeather} from '../../redux/actions'
 import { roundDegrees } from '../../utils/weatherUtils';
+import { View, Text, Dimensions } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import Swiper from "react-native-web-swiper";
 
 interface State {
   locationName: String;
@@ -12,6 +15,7 @@ interface State {
 };
 
 class WeatherContainer extends React.Component {
+  keyValue: any;
 
 constructor(props: any) {
   super(props);
@@ -24,12 +28,48 @@ constructor(props: any) {
   })();
 }
 
+componentDidMount() {
+  this.keyValue = 1;
+}
+
+componentDidUpdate(prevProps) {
+  if (this.props.children !== prevProps.children) {
+    this.keyValue = this.keyValue + 1;
+    // alternative: store keyValue as state to trigger re-render
+  }
+}
+
   render(){
+    const windowWidth = Dimensions.get('window').width;
+    const nextTitle = windowWidth > 700 ? '>' : '';
+    const prevTitle = windowWidth > 700 ? '<' : '';
     return (
-      <WeatherView
-        {...this.props.state.weather.weatherLocation.current.weather}
-        unit={this.props.state.weather.unit}
-      />
+      <View style={{flex:1}}>
+                  <Swiper
+                    key={this.keyValue}
+                    from={0}
+                    minDistanceForAction={0.1}
+                    controlsProps={{
+                      dotsTouchable: true,
+                      prevPos: 'left',
+                      nextPos: 'right',
+                      nextTitle,
+                      nextTitleStyle: { color: 'rgba(255,255,255,0.5)', fontSize: 60, fontWeight: '500' },
+                      PrevComponent: ({ onPress }) => (
+                        <TouchableOpacity onPress={onPress}>
+                          <Text style={{ color: 'rgba(255,255,255,0.5)', fontSize: 60, fontWeight: '500' }}>
+                            {prevTitle}
+                          </Text>
+                        </TouchableOpacity>
+                      ),
+                    }}
+                  >
+                      <WeatherView
+                      />
+                      <WeatherView
+                      />
+                  </Swiper>
+              </View>
     );
 }
 }
