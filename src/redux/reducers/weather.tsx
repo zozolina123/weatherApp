@@ -1,4 +1,4 @@
-import { RECEIVE_WEATHER, REQUEST_WEATHER, TOGGLE_UNIT } from "../actionTypes";
+import { RECEIVE_WEATHER, REQUEST_WEATHER, TOGGLE_UNIT, ADD_LOCATION } from "../actionTypes";
 import { converWeatherToUnit } from "../../utils/weatherUtils";
 
 
@@ -52,6 +52,15 @@ export default function(state = initialState, action: any) {
                 ...state,
                 unit
             })
+        }
+        case ADD_LOCATION: {
+            const newState = JSON.parse(JSON.stringify(state));
+            newState.weatherLocation[action.location.description] = {
+                isLoading: true,
+                isFetched: false,
+                weather: null
+            }
+            return(newState);
         }
         default:
             return state;

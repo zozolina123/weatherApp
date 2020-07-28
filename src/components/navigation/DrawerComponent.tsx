@@ -5,6 +5,7 @@ import {toggleUnit} from '../../redux/actions';
 import WeatherScreen from '../screens/WeatherScreen';
 import { connect } from 'react-redux';
 import CustomDrawerContent from './CustomDrawerContent';
+import AddLocationScreen from '../screens/AddLocationScreen';
 
 const Drawer = createDrawerNavigator();
 const width = Dimensions.get('window').width;
@@ -12,7 +13,14 @@ const isLargeScreen = width >= 768;
 
 const DrawerComponent = (props) => {
     const { toggleDrawer, isDrawerOpen } = props.route.params;
-
+    const listeners = ({ navigation, route }) => ({
+      drawerOpen: e => {
+        toggleDrawer(true);
+      },
+      drawerClose: e => {
+          setTimeout(() => toggleDrawer(false), 200);
+      }
+    })
     return(
         <Drawer.Navigator
         drawerStyle={isLargeScreen ? {width: 200} : { width: '50%' }}
@@ -26,14 +34,12 @@ const DrawerComponent = (props) => {
             <Drawer.Screen 
             name="Weather" 
             component={WeatherScreen} 
-            listeners={({ navigation, route }) => ({
-                drawerOpen: e => {
-                  toggleDrawer(true);
-                },
-                drawerClose: e => {
-                    setTimeout(() => toggleDrawer(false), 200);
-                }
-            })}
+            listeners={listeners}
+            />
+            <Drawer.Screen 
+            name="Add Location" 
+            component={AddLocationScreen} 
+            listeners={listeners}
             />
         </Drawer.Navigator>
     );

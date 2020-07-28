@@ -1,4 +1,4 @@
-import { REQUEST_WEATHER, RECEIVE_WEATHER, TOGGLE_UNIT } from "./actionTypes"
+import { REQUEST_WEATHER, RECEIVE_WEATHER, TOGGLE_UNIT, ADD_LOCATION } from "./actionTypes"
 import { getWeatherData } from "../utils/weatherAPI"
 
 export const requestWeather = (location : any) => ({
@@ -22,3 +22,8 @@ export function fetchWeather (location: any) {
         .then( response => dispatch(receiveWeather(response)));
     }
 }
+
+export const addLocation = (location: String) => ({
+    type: ADD_LOCATION,
+    location
+})

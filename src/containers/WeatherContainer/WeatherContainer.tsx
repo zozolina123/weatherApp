@@ -32,10 +32,11 @@ componentDidMount() {
   this.keyValue = 1;
 }
 
-componentDidUpdate(prevProps) {
-  if (this.props.children !== prevProps.children) {
-    this.keyValue = this.keyValue + 1;
-    // alternative: store keyValue as state to trigger re-render
+componentWillUpdate(nextProps) {
+  console.log(this.props.state.weather?.weatherLocation, nextProps.state.weather?.weatherLocation)
+  if (this.props.state.weather?.weatherLocation !== nextProps.state.weather?.weatherLocation) {
+    console.log('key value increment')
+    this.keyValue = this.keyValue + 1; //Swipper won't rerender unless key is changed
   }
 }
 
@@ -43,6 +44,10 @@ componentDidUpdate(prevProps) {
     const windowWidth = Dimensions.get('window').width;
     const nextTitle = windowWidth > 700 ? '>' : '';
     const prevTitle = windowWidth > 700 ? '<' : '';
+    const WeatherViewList = Object.keys(this.props.state.weather.weatherLocation).map((key, value) => {
+      return(<WeatherView location={this.props.state.weather.weatherLocation[key]} />)
+    })
+
     return (
       <View style={{flex:1}}>
                   <Swiper
@@ -64,10 +69,7 @@ componentDidUpdate(prevProps) {
                       ),
                     }}
                   >
-                      <WeatherView
-                      />
-                      <WeatherView
-                      />
+                      {WeatherViewList}
                   </Swiper>
               </View>
     );
