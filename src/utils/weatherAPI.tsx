@@ -1,5 +1,5 @@
 import React from 'react';
-import reverseGeocoding from './reverseGeocoding';
+import {reverseGeocoding, getCoordsForPlaceID} from './geocodingAPI';
 import * as Location from 'expo-location';
 
 export const getWeatherForGeo = (lat: Number,lon: Number) => {
@@ -7,7 +7,7 @@ export const getWeatherForGeo = (lat: Number,lon: Number) => {
     .then(response => response.json())
 } 
 
-export const getWeatherData = async () => {
+export const getCurrentLocationWeatherData = async () => {
     let location = await (await Location.getCurrentPositionAsync({}));
     let localWeather = await getWeatherForGeo(location.coords.latitude, location.coords.longitude);
     let geoLocation = await reverseGeocoding(location.coords.latitude, location.coords.longitude);
@@ -16,4 +16,10 @@ export const getWeatherData = async () => {
         locationName,
         localWeather
     }
+}
+
+export const getLocationWeatherData = async (placeId: String) => {
+    const geocodingData = await getCoordsForPlaceID(placeId);
+    const localWeather = await getWeatherForGeo(geocodingData.results[0].geometry.location.lat, geocodingData.results[0].geometry.location.lng);
+    return {localWeather};
 }

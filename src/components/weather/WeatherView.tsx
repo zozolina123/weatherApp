@@ -8,6 +8,7 @@ import DailyWeather from './ForcastWeather';
 import ComfortLevel from './ComfortLevel';
 import WindInfo from './WindInfo';
 import { calculateWindDirection, roundDegrees } from '../../utils/weatherUtils';
+import { fetchWeather } from '../../redux/actions';
 import { connect } from 'react-redux';
   
 interface Props {
@@ -17,31 +18,50 @@ interface Props {
 
 class WeatherView extends React.Component {
 
+  roundDegrees(nextProps) {
+    if(nextProps.state.weatherLocation[this.props.location]?.weather?.localWeather){
+      nextProps.state.weatherLocation[this.props.location].weather.localWeather =
+        roundDegrees( nextProps.state.weatherLocation[this.props.location].weather.localWeather);
+    }
+  }
+
+  constructor(props: any) {
+    super(props);
+    if(!this.props.state.weatherLocation[this.props.location].isFetched) {
+      this.props.fetchWeather(this.props.location, this.props.placeId);
+    }
+  }
+
+  componentWillUpdate(nextProps) {
+    this.roundDegrees(nextProps)
+  }
+
   render(){
     return (
       <View style={styles.mainContainer}>
             <ScrollView contentContainerStyle={styles.scrollView}>
-              {this.props.state.weatherLocation.current.weather != null  ? 
+              {this.props.state.weatherLocation[this.props.location].weather != null  ? 
               <View>
                 <CurrentWeather
-                  {...this.props.state.weatherLocation.current.weather}
+                  location={this.props.location}
+                  {...this.props.state.weatherLocation[this.props.location].weather}
                   />
                 <HourlyWeather
-                  {...this.props.state.weatherLocation.current.weather}
+                  {...this.props.state.weatherLocation[this.props.location].weather}
                   />
                 <DailyWeather
-                    dailyWeather={this.props.state.weatherLocation.current.weather.localWeather.daily}
+                    dailyWeather={this.props.state.weatherLocation[this.props.location].weather.localWeather.daily}
                     unit = {this.props.state.unit}
                     />
                 <ComfortLevel
-                    humidity = {this.props.state.weatherLocation.current.weather.localWeather.current.humidity}
-                    feelsLike = {this.props.state.weatherLocation.current.weather.localWeather.current.feels_like}
-                    uvIndex = {this.props.state.weatherLocation.current.weather.localWeather.current.uvi}
+                    humidity = {this.props.state.weatherLocation[this.props.location].weather.localWeather.current.humidity}
+                    feelsLike = {this.props.state.weatherLocation[this.props.location].weather.localWeather.current.feels_like}
+                    uvIndex = {this.props.state.weatherLocation[this.props.location].weather.localWeather.current.uvi}
                     unit = {this.props.state.unit}
                     />
                 <WindInfo
-                  windDirection={calculateWindDirection(this.props.state.weatherLocation.current.weather.localWeather.current.wind_deg)}
-                  windSpeed={this.props.state.weatherLocation.current.weather.localWeather.current.wind_speed}
+                  windDirection={calculateWindDirection(this.props.state.weatherLocation[this.props.location].weather.localWeather.current.wind_deg)}
+                  windSpeed={this.props.state.weatherLocation[this.props.location].weather.localWeather.current.wind_speed}
                   />
               </View>
                   :
@@ -75,11 +95,8 @@ const styles = StyleSheet.create({
   });
 
   const mapStateToProps = (state: any) => {
-    if(state.weather.weatherLocation?.current?.weather?.localWeather)
-      state.weather.weatherLocation.current.weather.localWeather =
-        roundDegrees( state.weather.weatherLocation.current.weather.localWeather);
     return { state: state.weather };
   };
 
-export default connect(mapStateToProps, null)(WeatherView)
+export default connect(mapStateToProps, {fetchWeather})(WeatherView)
   

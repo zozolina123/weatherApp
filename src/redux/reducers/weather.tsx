@@ -1,4 +1,4 @@
-import { RECEIVE_WEATHER, REQUEST_WEATHER, TOGGLE_UNIT, ADD_LOCATION } from "../actionTypes";
+import { RECEIVE_WEATHER, REQUEST_WEATHER, TOGGLE_UNIT, ADD_LOCATION, REMOVE_LOCATION } from "../actionTypes";
 import { converWeatherToUnit } from "../../utils/weatherUtils";
 
 
@@ -14,7 +14,7 @@ const initialState = {
 }
 
 export default function(state = initialState, action: any) {
-    const {unit} = action;
+    const {unit} = state;
     switch (action.type) {
         case REQUEST_WEATHER: 
         {
@@ -22,7 +22,8 @@ export default function(state = initialState, action: any) {
                 ...state,
                 weatherLocation: {
                     ...state.weatherLocation,
-                    current: {
+                    [action.location]: {
+                        ...state.weatherLocation[action.location],
                         isLoading: true,
                         isFetched: false,
                         weather: null
@@ -32,11 +33,15 @@ export default function(state = initialState, action: any) {
         }
         case RECEIVE_WEATHER:
         {
+            if(unit == "F") {
+                action.response.localWeather = converWeatherToUnit(action.response.localWeather, unit);
+            }
             return ({
                 ...state,
                 weatherLocation: {
                     ...state.weatherLocation,
-                    current: {
+                    [action.location]: {
+                        ...state.weatherLocation[action.location],
                         isLoading: false,
                         isFetched: true,
                         weather: action.response
@@ -46,8 +51,12 @@ export default function(state = initialState, action: any) {
         }
         case TOGGLE_UNIT: {
             const unit = state.unit == 'C' ? 'F' : 'C';
-            state.weatherLocation.current.weather.localWeather = 
-                converWeatherToUnit(state.weatherLocation.current.weather.localWeather, unit);
+
+            Object.keys(state.weatherLocation).map((key, value) => { 
+                state.weatherLocation[key].weather.localWeather = converWeatherToUnit(state.weatherLocation[key].weather.localWeather, unit);
+                return state.weatherLocation;
+            })
+
             return({
                 ...state,
                 unit
@@ -55,12 +64,18 @@ export default function(state = initialState, action: any) {
         }
         case ADD_LOCATION: {
             const newState = JSON.parse(JSON.stringify(state));
-            newState.weatherLocation[action.location.description] = {
+            newState.weatherLocation[action.location] = {
                 isLoading: true,
                 isFetched: false,
+                placeId: action.placeId,
                 weather: null
             }
-            return(newState);
+            return newState;
+        }
+        case REMOVE_LOCATION: {
+            const newState = JSON.parse(JSON.stringify(state));
+            delete newState.weatherLocation[action.location.key];
+            return newState;
         }
         default:
             return state;

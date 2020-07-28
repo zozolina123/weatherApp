@@ -3,8 +3,6 @@ import * as Location from 'expo-location';
 import {IWeather} from '../../interfaces/IWeatherContainer'
 import WeatherView from '../../components/weather/WeatherView'
 import { connect } from 'react-redux';
-import {fetchWeather} from '../../redux/actions'
-import { roundDegrees } from '../../utils/weatherUtils';
 import { View, Text, Dimensions } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Swiper from "react-native-web-swiper";
@@ -24,7 +22,6 @@ constructor(props: any) {
     if (status !== 'granted') {
       console.log('Permission to access location was denied');
     }
-    this.props.fetchWeather();
   })();
 }
 
@@ -33,11 +30,13 @@ componentDidMount() {
 }
 
 componentWillUpdate(nextProps) {
-  console.log(this.props.state.weather?.weatherLocation, nextProps.state.weather?.weatherLocation)
-  if (this.props.state.weather?.weatherLocation !== nextProps.state.weather?.weatherLocation) {
-    console.log('key value increment')
-    this.keyValue = this.keyValue + 1; //Swipper won't rerender unless key is changed
+  if(this.props.state.weather?.weatherLocation && nextProps.state.weather?.weatherLocation){
+    if (Object.keys(this.props.state.weather.weatherLocation).length 
+      !== Object.keys(nextProps.state.weather.weatherLocation).length) {
+      this.keyValue = this.keyValue + 1; //Swipper won't rerender unless key is changed
+    }
   }
+  
 }
 
   render(){
@@ -45,7 +44,10 @@ componentWillUpdate(nextProps) {
     const nextTitle = windowWidth > 700 ? '>' : '';
     const prevTitle = windowWidth > 700 ? '<' : '';
     const WeatherViewList = Object.keys(this.props.state.weather.weatherLocation).map((key, value) => {
-      return(<WeatherView location={this.props.state.weather.weatherLocation[key]} />)
+      if(this.props.state.weather.weatherLocation[key].hasOwnProperty('placeId')) {
+        return(<WeatherView {...this.props} location={key} placeId={this.props.state.weather.weatherLocation[key].placeId}  />)
+      }
+      return(<WeatherView {...this.props} location={key}  />)
     })
 
     return (
@@ -77,10 +79,7 @@ componentWillUpdate(nextProps) {
 }
 
 const mapStateToProps = (state: any) => {
-  if(state.weather.weatherLocation?.current?.weather?.localWeather)
-    state.weather.weatherLocation.current.weather.localWeather =
-      roundDegrees( state.weather.weatherLocation.current.weather.localWeather);
   return { state };
 };
 
-export default connect(mapStateToProps, { fetchWeather })(WeatherContainer)
+export default connect(mapStateToProps)(WeatherContainer)

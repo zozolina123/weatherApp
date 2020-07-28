@@ -6,13 +6,15 @@ import { IWeather } from '../../interfaces/IWeatherContainer';
 interface Props {
     locationName: String;
     localWeather: IWeather;
+    location: String
   };
 
 
 const CurrentWeather = (props: Props) => {
+    const title = props.location == 'current' ? props.locationName : props.location;
     return(
         <View style={styles.container}>
-              <Text style={fontSize.large}>{props.locationName}</Text>
+              <Text style={fontSize.large}>{title}</Text>
               <Image
                   style={{
                     width: 66,
